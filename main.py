@@ -37,18 +37,23 @@ class Circumference:
 
 class Choose:
 
-    def __init__(self, x, y, w, h, screen):
+    def __init__(self, x, y, w, h, screen, state):
         self.x = x
         self.y = y
         self.h = h
         self.w = w
         self.screen = screen
+        self.state = state
 
     def draw(self):
-        obj = pygame.Rect(self.x, self.y, self.w, self.h)
-        pygame.draw.rect(self.screen, (255, 0, 255), obj)
-        obj = pygame.Rect(self.x, self.y, self.w-5, self.h-5)
-        pygame.draw.rect(self.screen, (255, 255, 255), obj)
+        if not self.state:
+            obj = pygame.Rect(self.x, self.y, self.w, self.h)
+            pygame.draw.rect(self.screen, (255, 0, 255), obj)
+            obj = pygame.Rect(self.x, self.y, self.w-5, self.h-5)
+            pygame.draw.rect(self.screen, (255, 255, 255), obj)
+        else:
+            obj = pygame.Rect(self.x, self.y, self.w, self.h)
+            pygame.draw.rect(self.screen, (255, 0, 0), obj)
 
 
 class MainController:
@@ -57,23 +62,24 @@ class MainController:
         self.screen = screen
         self.circumference = Circumference(WIDTH/2, HEIGHT/2, 200, screen)
         self.chooses = [[], [], [], []]
+        self.last_choose = None
         q = 1
         for i in range(q):
             chw = WIDTH/q
             chx = chw*i
-            self.chooses[0].append(Choose(chx, 0, chw, 100, self.screen))
+            self.chooses[0].append(Choose(chx, 0, chw, 100, self.screen, False))
         for i in range(q):
             chw = WIDTH/q
             chx = chw*i
-            self.chooses[1].append(Choose(chx, HEIGHT-100, chw, 100, self.screen))
+            self.chooses[1].append(Choose(chx, HEIGHT-100, chw, 100, self.screen, False))
         for i in range(q):
             chh = (HEIGHT-200)/q
             chy = 100+chh*i
-            self.chooses[2].append(Choose(0, chy, 100, chh, self.screen))
+            self.chooses[2].append(Choose(0, chy, 100, chh, self.screen, False))
         for i in range(q):
             chh = (HEIGHT-200)/q
             chy = 100+chh*i
-            self.chooses[3].append(Choose(WIDTH-100, chy, 100, chh, self.screen))
+            self.chooses[3].append(Choose(WIDTH-100, chy, 100, chh, self.screen, False))
 
     def update(self):
         for row in self.chooses:
@@ -84,15 +90,18 @@ class MainController:
 
     def highlight(self):
         if self.circumference.speed < 0.1:
-            #repetition = self.circumference.angle // 360
             if 45 >= self.circumference.angle > -45:
-                print(1)
+                self.chooses[0][0].state = True
+                self.last_choose = self.chooses[0][0]
             elif 45 < self.circumference.angle <= 135:
-                print(2)
+                self.chooses[2][0].state = True
+                self.last_choose = self.chooses[2][0]
             elif 135 < self.circumference.angle <= 225:
-                print(3)
+                self.chooses[1][0].state = True
+                self.last_choose = self.chooses[1][0]
             elif 225 < self.circumference.angle <= 315:
-                print(4)
+                self.chooses[3][0].state = True
+                self.last_choose = self.chooses[3][0]
 
 
 def main():
@@ -110,6 +119,7 @@ def main():
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN and main_controller.circumference.speed < 0.1:
                 main_controller.circumference.speed = random.randint(1, 5)
+                main_controller.last_choose.state = False
 
         screen.fill((0, 0, 0))
         main_controller.update()
