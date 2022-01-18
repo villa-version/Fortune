@@ -71,11 +71,11 @@ class MainController:
         for i in range(q):
             chw = WIDTH/q
             chx = chw*i
-            self.chooses[1].append(Choose(chx, HEIGHT-100, chw, 100, self.screen, False))
+            self.chooses[2].append(Choose(chx, HEIGHT-100, chw, 100, self.screen, False))
         for i in range(q):
             chh = (HEIGHT-200)/q
             chy = 100+chh*i
-            self.chooses[2].append(Choose(0, chy, 100, chh, self.screen, False))
+            self.chooses[1].append(Choose(0, chy, 100, chh, self.screen, False))
         for i in range(q):
             chh = (HEIGHT-200)/q
             chy = 100+chh*i
@@ -90,18 +90,19 @@ class MainController:
 
     def highlight(self):
         if self.circumference.speed < 0.1:
-            if 45 >= self.circumference.angle > -45:
-                self.chooses[0][0].state = True
-                self.last_choose = self.chooses[0][0]
-            elif 45 < self.circumference.angle <= 135:
-                self.chooses[2][0].state = True
-                self.last_choose = self.chooses[2][0]
-            elif 135 < self.circumference.angle <= 225:
-                self.chooses[1][0].state = True
-                self.last_choose = self.chooses[1][0]
-            elif 225 < self.circumference.angle <= 315:
-                self.chooses[3][0].state = True
-                self.last_choose = self.chooses[3][0]
+            for row in range(len(self.chooses)):
+                if 45+90*row >= self.circumference.angle > -45+90*row:
+                    self.chooses[row][0].state = True
+                    self.last_choose = self.chooses[row][0]
+                    #elif 45 < self.circumference.angle <= 135:
+                    #    self.chooses[2][0].state = True
+                    #    self.last_choose = self.chooses[2][0]
+                    #elif 135 < self.circumference.angle <= 225:
+                    #    self.chooses[1][0].state = True
+                    #    self.last_choose = self.chooses[1][0]
+                    #elif 225 < self.circumference.angle <= 315:
+                    #    self.chooses[3][0].state = True
+                    #    self.last_choose = self.chooses[3][0]
 
 
 def main():
