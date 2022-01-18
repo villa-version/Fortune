@@ -85,8 +85,14 @@ class MainController:
     def highlight(self):
         if self.circumference.speed < 0.1:
             #repetition = self.circumference.angle // 360
-            if 45 >= self.circumference.angle >= -45:
+            if 45 >= self.circumference.angle > -45:
                 print(1)
+            elif 45 < self.circumference.angle <= 135:
+                print(2)
+            elif 135 < self.circumference.angle <= 225:
+                print(3)
+            elif 225 < self.circumference.angle <= 315:
+                print(4)
 
 
 def main():
