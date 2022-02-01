@@ -100,7 +100,7 @@ class MainController:
                         return 0
             d = 0
             for i in range(self.quantity):
-                if i < 2:
+                if i < self.quantity//2:
                     if 315+(rect_angle*i) < self.circumference.angle <= 315+(rect_angle*(i+1)):
                         self.chooses[0][i].state = True
                         self.last_choose = self.chooses[0][i]
