@@ -12,7 +12,7 @@ class Circumference:
         self.w = w
         self.screen = screen
         self.angle = random.randint(0, 360)
-        self.speed = random.randint(1, 1)
+        self.speed = random.randint(1, 3)
 
     def draw(self):
         pygame.draw.circle(self.screen, (255, 0, 0), (self.x, self.y), self.w)
@@ -62,22 +62,22 @@ class MainController:
         self.circumference = Circumference(WIDTH/2, HEIGHT/2, 200, screen)
         self.chooses = [[], [], [], []]
         self.last_choose = None
-        q = 1
-        for i in range(q):
-            chw = (WIDTH-200)/q
-            chx = chw*i+100
+        self.quantity = 4
+        for i in range(self.quantity):
+            chw = (WIDTH-200)/self.quantity
+            chx = WIDTH-100-chw-chw*i
             self.chooses[0].append(Choose(chx, 0, chw, 100, self.screen, False))
-        for i in range(q):
-            chw = (WIDTH-200)/q
+        for i in range(self.quantity):
+            chw = (WIDTH-200)/self.quantity
             chx = chw*i+100
             self.chooses[2].append(Choose(chx, HEIGHT-100, chw, 100, self.screen, False))
-        for i in range(q):
-            chh = (HEIGHT-200)/q
+        for i in range(self.quantity):
+            chh = (HEIGHT-200)/self.quantity
             chy = 100+chh*i
             self.chooses[1].append(Choose(0, chy, 100, chh, self.screen, False))
-        for i in range(q):
-            chh = (HEIGHT-200)/q
-            chy = 100+chh*i
+        for i in range(1, self.quantity+1):
+            chh = (HEIGHT-200)/self.quantity
+            chy = (HEIGHT-100)-chh*i
             self.chooses[3].append(Choose(WIDTH-100, chy, 100, chh, self.screen, False))
 
     def update(self):
@@ -89,14 +89,26 @@ class MainController:
 
     def highlight(self):
         if self.circumference.speed < 0.1:
+            length = WIDTH - 200
+            rect_angle = 90 / self.quantity
             for row in range(1, len(self.chooses)):
-                if 45*row < self.circumference.angle <= 45+90*row:
-                    self.chooses[row][0].state = True
-                    self.last_choose = self.chooses[row][0]
-                    return 0
-            if 0 < self.circumference.angle <= 45 or 315 < self.circumference.angle <= 360:
-                self.chooses[0][0].state = True
-                self.last_choose = self.chooses[0][0]
+                s = 45*row+45*(row-1)
+                for i in range(self.quantity):
+                    if s+(rect_angle*i) < self.circumference.angle <= s+(rect_angle*(i+1)):
+                        self.chooses[row][i].state = True
+                        self.last_choose = self.chooses[row][i]
+                        return 0
+            d = 0
+            for i in range(self.quantity):
+                if i < 2:
+                    if 315+(rect_angle*i) < self.circumference.angle <= 315+(rect_angle*(i+1)):
+                        self.chooses[0][i].state = True
+                        self.last_choose = self.chooses[0][i]
+                else:
+                    if rect_angle*d < self.circumference.angle <= rect_angle*(d+1):
+                        self.chooses[0][i].state = True
+                        self.last_choose = self.chooses[0][i]
+                    d += 1
 
 
 def main():
